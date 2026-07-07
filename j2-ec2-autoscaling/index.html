@@ -1,0 +1,1473 @@
+
+<!doctype html>
+<html lang="fr" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>J2 - EC2, Auto Scaling, ECS, Lambda - Notes SAA-C03</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#saa-c03-fiche-j2-ec2-auto-scaling-ecseks-lambda" class="md-skip">
+          Aller au contenu
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="En-tête">
+    <a href=".." title="Notes SAA-C03" class="md-header__button md-logo" aria-label="Notes SAA-C03" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Notes SAA-C03
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              J2 - EC2, Auto Scaling, ECS, Lambda
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Rechercher" placeholder="Rechercher" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Recherche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Effacer" aria-label="Effacer" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initialisation de la recherche
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Notes SAA-C03" class="md-nav__button md-logo" aria-label="Notes SAA-C03" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Notes SAA-C03
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    J2 - EC2, Auto Scaling, ECS, Lambda
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    J2 - EC2, Auto Scaling, ECS, Lambda
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-amazon-ec2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Amazon EC2
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Amazon EC2">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#composants-dune-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Composants d'une instance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#types-dinstances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Types d'instances
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stockage-le-plus-performant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stockage le plus performant
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#options-dachat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Options d'achat
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#health-checks-les-3-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health checks — les 3 types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placement-groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Placement Groups
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-groups-vs-nacl-le-tableau-a-connaitre-par-cur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Groups vs NACL — LE tableau à connaître par cœur
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-ec2-auto-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. EC2 Auto Scaling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. EC2 Auto Scaling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#composants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Composants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scaling-horizontal-vs-vertical" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scaling horizontal vs vertical
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#les-3-policies-dynamiques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Les 3 policies dynamiques
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lifecycle-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lifecycle Hooks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process-suspendables-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Process suspendables (troubleshooting)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-ecs-eks-ecr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. ECS / EKS / ECR
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. ECS / EKS / ECR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ecs-task-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ECS — Task Definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#les-3-roles-iam-decs-souvent-confondus-a-lexamen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Les 3 rôles IAM d'ECS (souvent confondus à l'examen)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#les-4-network-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Les 4 network modes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-placement-strategies-launch-type-ec2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task Placement Strategies (launch type EC2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eks-ecr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EKS / ECR
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-aws-lambda" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. AWS Lambda
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. AWS Lambda">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#concurrency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concurrency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lambdaedge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lambda@Edge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lambda-dans-un-vpc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lambda dans un VPC
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-questions-qui-tombent-souvent-patterns-dexamen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Questions qui tombent souvent (patterns d'examen)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-memo-flash-a-relire-avant-lexamen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Mémo flash (à relire avant l'examen)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-corrections-detaillees-des-qcm-du-jour" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Corrections détaillées des QCM du jour
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Corrections détaillées des QCM du jour">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#qcm-1-ec2-7-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QCM 1 — EC2 (7 questions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qcm-2-auto-scaling-5-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QCM 2 — Auto Scaling (5 questions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qcm-3-ecslambda-5-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QCM 3 — ECS/Lambda (5 questions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-amazon-ec2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Amazon EC2
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Amazon EC2">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#composants-dune-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Composants d'une instance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#types-dinstances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Types d'instances
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stockage-le-plus-performant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stockage le plus performant
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#options-dachat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Options d'achat
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#health-checks-les-3-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health checks — les 3 types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placement-groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Placement Groups
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-groups-vs-nacl-le-tableau-a-connaitre-par-cur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Groups vs NACL — LE tableau à connaître par cœur
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-ec2-auto-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. EC2 Auto Scaling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. EC2 Auto Scaling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#composants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Composants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scaling-horizontal-vs-vertical" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scaling horizontal vs vertical
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#les-3-policies-dynamiques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Les 3 policies dynamiques
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lifecycle-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lifecycle Hooks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process-suspendables-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Process suspendables (troubleshooting)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-ecs-eks-ecr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. ECS / EKS / ECR
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. ECS / EKS / ECR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ecs-task-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ECS — Task Definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#les-3-roles-iam-decs-souvent-confondus-a-lexamen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Les 3 rôles IAM d'ECS (souvent confondus à l'examen)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#les-4-network-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Les 4 network modes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-placement-strategies-launch-type-ec2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task Placement Strategies (launch type EC2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eks-ecr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EKS / ECR
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-aws-lambda" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. AWS Lambda
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. AWS Lambda">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#concurrency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concurrency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lambdaedge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lambda@Edge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lambda-dans-un-vpc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lambda dans un VPC
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-questions-qui-tombent-souvent-patterns-dexamen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Questions qui tombent souvent (patterns d'examen)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-memo-flash-a-relire-avant-lexamen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Mémo flash (à relire avant l'examen)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-corrections-detaillees-des-qcm-du-jour" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Corrections détaillées des QCM du jour
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Corrections détaillées des QCM du jour">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#qcm-1-ec2-7-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QCM 1 — EC2 (7 questions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qcm-2-auto-scaling-5-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QCM 2 — Auto Scaling (5 questions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qcm-3-ecslambda-5-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QCM 3 — ECS/Lambda (5 questions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="saa-c03-fiche-j2-ec2-auto-scaling-ecseks-lambda">SAA-C03 — Fiche J2 : EC2, Auto Scaling, ECS/EKS, Lambda</h1>
+<p><em>Basée sur le Tutorials Dojo Study Guide (pages 56-119) — 06/07/2026</em></p>
+<hr />
+<h2 id="1-amazon-ec2">1. Amazon EC2</h2>
+<h3 id="composants-dune-instance">Composants d'une instance</h3>
+<p>Ordre de création : <strong>AMI</strong> (OS + config, non modifiable après lancement) → <strong>type/taille</strong> (modifiable après coup = "right sizing") → réseau/VPC/subnet → placement group → stockage EBS → tags → security groups → <strong>key pair</strong> (non ré-associable après lancement).</p>
+<h3 id="types-dinstances">Types d'instances</h3>
+<ul>
+<li><strong>General Purpose</strong> : équilibre compute/mémoire/réseau</li>
+<li><strong>Compute Optimized</strong> : calcul intensif</li>
+<li><strong>Memory Optimized</strong> : bases de données in-memory, gros datasets</li>
+<li><strong>Storage Optimized</strong> : accès séquentiel haut débit sur gros volumes locaux, dizaines de milliers d'IOPS</li>
+<li><strong>Nitro-based</strong> : bare metal, jusqu'à <strong>64 000 IOPS</strong> en EBS Provisioned IOPS (vs 32 000 sur les autres)</li>
+</ul>
+<h3 id="stockage-le-plus-performant">Stockage le plus performant</h3>
+<ul>
+<li><strong>EBS Provisioned IOPS (io1/io2)</strong> : le plus haut niveau de perf avec persistance des données</li>
+<li><strong>Instance store</strong> : latence encore plus basse (attaché physiquement à l'hôte), mais données perdues à l'arrêt — uniquement pour données temporaires/reconstructibles</li>
+</ul>
+<h3 id="options-dachat">Options d'achat</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Caractéristique clé</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>On-Demand</td>
+<td>À l'heure/seconde, zéro engagement, instances arrêtées non facturées</td>
+</tr>
+<tr>
+<td>Compute Savings Plans</td>
+<td>Engagement en $/h sur 1-3 ans, <strong>flexible</strong> : toute famille, taille, AZ, région, OS, tenancy + <strong>Fargate et Lambda</strong></td>
+</tr>
+<tr>
+<td>EC2 Instance Savings Plans</td>
+<td>Moins cher mais limité à une famille d'instance dans une région</td>
+</tr>
+<tr>
+<td>Reserved Instances</td>
+<td>Engagement sur type+région+tenancy+OS ; <strong>revendables sur la Marketplace</strong> (Standard)</td>
+</tr>
+<tr>
+<td>Spot</td>
+<td>Le moins cher ; interruption avec <strong>préavis de 2 minutes</strong> quand le prix spot dépasse ton max</td>
+</tr>
+<tr>
+<td>Dedicated Hosts</td>
+<td>Facturation par hôte physique, visibilité sockets/cores, <strong>BYOL supporté</strong></td>
+</tr>
+<tr>
+<td>Dedicated Instances</td>
+<td>Facturation par instance, matériel single-tenant, pas de visibilité hardware, pas de BYOL</td>
+</tr>
+<tr>
+<td>Capacity Reservations</td>
+<td>Réserve de capacité dans une AZ, sans engagement de durée</td>
+</tr>
+</tbody>
+</table>
+<h3 id="health-checks-les-3-types">Health checks — les 3 types</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>EC2 status check</th>
+<th>ELB health check</th>
+<th>Auto Scaling health check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quoi</td>
+<td>Hardware/software de l'instance</td>
+<td>Ping/connexion/requête HTTP vers les cibles</td>
+<td>Combine les sources</td>
+</tr>
+<tr>
+<td>Désactivable</td>
+<td>Non (natif)</td>
+<td>Configurable (port, protocole, path)</td>
+<td>Suspendable par process</td>
+</tr>
+<tr>
+<td>Particularité</td>
+<td>System status (AWS répare) vs Instance status (toi)</td>
+<td>HTTP 200 attendu ; NLB = checks actifs + passifs</td>
+<td><strong>Si un LB est attaché : EC2 status + ELB health check combinés</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="placement-groups">Placement Groups</h3>
+<ul>
+<li><strong>Cluster</strong> : instances rapprochées dans <strong>une seule AZ</strong> → latence minimale, débit max (HPC). Incompatible multi-AZ.</li>
+<li><strong>Partition</strong> : jusqu'à 7 partitions/AZ, pas de hardware partagé entre partitions → limite les pannes corrélées (big data distribué)</li>
+<li><strong>Spread</strong> : chaque instance sur un rack distinct (réseau + alimentation séparés), max <strong>7 instances/AZ/groupe</strong> → isolation maximale (petites charges critiques)</li>
+</ul>
+<h3 id="security-groups-vs-nacl-le-tableau-a-connaitre-par-cur">Security Groups vs NACL — LE tableau à connaître par cœur</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Security Group</th>
+<th>Network ACL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Niveau</td>
+<td>Instance (précisément : l'<strong>ENI</strong>)</td>
+<td>Subnet</td>
+</tr>
+<tr>
+<td>État</td>
+<td><strong>Stateful</strong> — la réponse à un trafic autorisé passe automatiquement</td>
+<td><strong>Stateless</strong> — règles explicites nécessaires dans les deux sens</td>
+</tr>
+<tr>
+<td>Règles</td>
+<td><strong>Allow uniquement</strong></td>
+<td><strong>Allow ET Deny</strong></td>
+</tr>
+<tr>
+<td>Évaluation</td>
+<td>Toutes les règles évaluées ensemble</td>
+<td>Par numéro croissant, première règle qui matche s'applique</td>
+</tr>
+<tr>
+<td>Défaut</td>
+<td>SG par défaut du VPC si rien de spécifié</td>
+<td>NACL par défaut du VPC = tout autorisé ; NACL custom = tout refusé au départ</td>
+</tr>
+<tr>
+<td>Association</td>
+<td>Plusieurs SG par ENI</td>
+<td><strong>1 seule NACL par subnet</strong> (mais 1 NACL peut couvrir plusieurs subnets)</td>
+</tr>
+</tbody>
+</table>
+<p>Points fins :
+- Communication entre 2 instances du même VPC → règle SG avec <strong>IP privée</strong> (ou ID du SG), jamais l'IP publique/Elastic
+- Un SG d'un VPC peeré peut être référencé dans une règle
+- Ports éphémères : ne pas oublier la règle allow (NAT gateway utilise 1024-65535) dans les NACL des subnets publics</p>
+<hr />
+<h2 id="2-ec2-auto-scaling">2. EC2 Auto Scaling</h2>
+<h3 id="composants">Composants</h3>
+<ul>
+<li><strong>ASG</strong> = launch template (AMI, type, key pair, SG, IAM instance profile, user data) + service de scaling</li>
+<li>Tailles : <strong>min / desired / max</strong></li>
+<li>Multi-AZ recommandé ; si LB attaché → <strong>utiliser son health check</strong></li>
+<li>Un ASG est <strong>régional</strong> : multi-AZ oui, multi-région non. Les launch templates aussi.</li>
+</ul>
+<h3 id="scaling-horizontal-vs-vertical">Scaling horizontal vs vertical</h3>
+<ul>
+<li><strong>Horizontal</strong> : ajouter des instances (nécessite ASG + ELB) → serveurs stateless</li>
+<li><strong>Vertical</strong> : grossir l'instance → souvent nécessite un arrêt (EC2, RDS)</li>
+</ul>
+<h3 id="les-3-policies-dynamiques">Les 3 policies dynamiques</h3>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Fonctionnement</th>
+<th>Limite</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Simple Scaling</strong></td>
+<td>Une action par alarme CloudWatch</td>
+<td>Doit attendre cooldown + health checks avant de réagir à une nouvelle alarme</td>
+</tr>
+<tr>
+<td><strong>Step Scaling</strong></td>
+<td>Paliers proportionnels à l'ampleur du dépassement (+10% si 60-70% CPU, +30% au-delà...)</td>
+<td>Continue à réagir aux alarmes <strong>même pendant un scaling en cours</strong></td>
+</tr>
+<tr>
+<td><strong>Target Tracking</strong></td>
+<td>Tu fixes une cible (ex : CPU moyen 80%), AWS gère les seuils tout seul</td>
+<td>Le plus simple à configurer</td>
+</tr>
+</tbody>
+</table>
+<p>Métriques Target Tracking notables : ASGAverageCPUUtilization, ASGAverageNetworkIn/Out, <strong>ALBRequestCountPerTarget</strong>.</p>
+<p>À connaître aussi : <strong>instance warmup</strong> (délai avant que la métrique d'une nouvelle instance compte dans l'agrégat) et <strong>scheduled/predictive scaling</strong> pour les charges prévisibles.</p>
+<h3 id="lifecycle-hooks">Lifecycle Hooks</h3>
+<ul>
+<li><strong>Pending:Wait</strong> (au lancement) / <strong>Terminating:Wait</strong> (à la terminaison)</li>
+<li>Heartbeat timeout : 30 s à 7200 s (défaut 3600 s), fin anticipée via <code>CompleteLifecycleAction</code></li>
+<li>Default Result au timeout :</li>
+<li><strong>CONTINUE</strong> = l'ASG suppose le succès et poursuit le cycle normal (InService ou terminaison)</li>
+<li><strong>ABANDON</strong> = terminaison immédiate de l'instance</li>
+<li>Événements routés vers <strong>EventBridge</strong> (→ Lambda) ou notification <strong>SNS</strong> (nécessite un topic + rôle IAM)</li>
+</ul>
+<h3 id="process-suspendables-troubleshooting">Process suspendables (troubleshooting)</h3>
+<p>Launch, Terminate, AddToLoadBalancer, AlarmNotification, AZRebalance, HealthCheck, ReplaceUnhealthy, ScheduledActions.</p>
+<hr />
+<h2 id="3-ecs-eks-ecr">3. ECS / EKS / ECR</h2>
+<h3 id="ecs-task-definition">ECS — Task Definition</h3>
+<p>Spec sheet du conteneur : image Docker, CPU/RAM, launch type (<strong>EC2</strong> ou <strong>Fargate</strong>), network mode, volumes, commande de démarrage.</p>
+<h3 id="les-3-roles-iam-decs-souvent-confondus-a-lexamen">Les 3 rôles IAM d'ECS (souvent confondus à l'examen)</h3>
+<table>
+<thead>
+<tr>
+<th>Rôle</th>
+<th>Sert à</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Container Instance Role</strong></td>
+<td>L'instance EC2 hôte communique avec le service ECS (launch type EC2 uniquement)</td>
+</tr>
+<tr>
+<td><strong>Task Execution Role</strong></td>
+<td>Tirer l'image depuis ECR + publier les logs CloudWatch (infra)</td>
+</tr>
+<tr>
+<td><strong>Task Role</strong></td>
+<td>Les conteneurs appellent eux-mêmes des API AWS (applicatif, optionnel)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="les-4-network-modes">Les 4 network modes</h3>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Caractéristique</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bridge</strong> (défaut Linux)</td>
+<td>Réseau virtuel Docker, port mapping dynamique, perf moyenne</td>
+</tr>
+<tr>
+<td><strong>Host</strong></td>
+<td>Partage l'IP et la pile réseau de l'hôte, plus rapide, mais 1 seul conteneur par port</td>
+</tr>
+<tr>
+<td><strong>awsvpc</strong></td>
+<td>Une ENI + IP propre par tâche — <strong>seul mode supporté par Fargate</strong></td>
+</tr>
+<tr>
+<td><strong>None</strong></td>
+<td>Pas de réseau (loopback uniquement)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="task-placement-strategies-launch-type-ec2">Task Placement Strategies (launch type EC2)</h3>
+<ul>
+<li><strong>Binpack</strong> : remplit au max les instances existantes (moins d'instances = moins cher)</li>
+<li><strong>Spread</strong> : répartit sur instances/AZ (haute dispo) — défaut pour les services</li>
+<li><strong>Random</strong> : sans critère</li>
+<li>Combinables entre elles ; Fargate = spread multi-AZ par défaut</li>
+</ul>
+<h3 id="eks-ecr">EKS / ECR</h3>
+<ul>
+<li><strong>EKS</strong> : Kubernetes managé → choix <strong>cloud-agnostic</strong> (portable on-prem/Azure/GCP), pods sur Fargate ou EC2</li>
+<li><strong>ECR</strong> : registre d'images managé, chiffrement au repos (S3 SSE + option KMS), cache de registres publics</li>
+</ul>
+<hr />
+<h2 id="4-aws-lambda">4. AWS Lambda</h2>
+<h3 id="concurrency">Concurrency</h3>
+<ul>
+<li>Quota par défaut : <strong>1000 exécutions concurrentes par région</strong>, partagé entre toutes les fonctions du compte</li>
+<li><strong>Reserved concurrency</strong> : capacité dédiée à une fonction — les autres ne peuvent pas la consommer, et elle ne peut pas dépasser sa réserve. Gratuit.</li>
+<li><strong>Provisioned concurrency</strong> : pré-initialise des environnements → élimine les cold starts. Payant. Ne peut pas dépasser la reserved concurrency si les deux sont configurées.</li>
+</ul>
+<h3 id="lambdaedge">Lambda@Edge</h3>
+<ul>
+<li>Code Lambda (Node.js/Python) exécuté dans les <strong>edge locations CloudFront</strong></li>
+<li>4 déclencheurs : viewer request, origin request, origin response, viewer response</li>
+<li>Différence clé vs Lambda+API Gateway : ces derniers sont <strong>régionaux</strong>, Lambda@Edge est global/edge</li>
+</ul>
+<h3 id="lambda-dans-un-vpc">Lambda dans un VPC</h3>
+<ul>
+<li>Par défaut, <strong>pas d'accès aux ressources privées d'un VPC</strong></li>
+<li>Connexion au VPC = Lambda crée une <strong>ENI par subnet</strong> configuré (partagées entre fonctions du même subnet)</li>
+<li>Rôle d'exécution requis : permissions type <code>AWSLambdaVPCAccessExecutionRole</code></li>
+<li><strong>Effet secondaire majeur</strong> : la fonction perd l'accès internet public, sauf NAT/IGW dans le VPC ou VPC endpoints pour les services AWS</li>
+</ul>
+<hr />
+<h2 id="5-questions-qui-tombent-souvent-patterns-dexamen">5. Questions qui tombent souvent (patterns d'examen)</h2>
+<ol>
+<li><strong>"Latence réseau minimale entre instances"</strong> → Cluster placement group (et rappel : une seule AZ)</li>
+<li><strong>"Réduire les pannes corrélées, chaque instance isolée"</strong> → Spread placement group (max 7/AZ)</li>
+<li><strong>"Le moins cher pour un workload interruptible"</strong> → Spot</li>
+<li><strong>"Discount flexible toutes familles + Fargate/Lambda"</strong> → Compute Savings Plans</li>
+<li><strong>"BYOL / licences par socket"</strong> → Dedicated Hosts (pas Dedicated Instances)</li>
+<li><strong>"Bloquer des IP précises sur un subnet"</strong> → NACL (règles deny), jamais un SG</li>
+<li><strong>"Trafic de réponse bloqué alors que l'aller passe"</strong> → penser NACL stateless (règle retour manquante sur les ports éphémères)</li>
+<li><strong>"ASG remplace des instances que l'EC2 status check dit saines"</strong> → normal si le health check ELB échoue (checks combinés)</li>
+<li><strong>"Actions custom avant mise en service / avant terminaison"</strong> → Lifecycle hooks (Pending:Wait / Terminating:Wait)</li>
+<li><strong>"Scaling proportionnel à l'ampleur du pic"</strong> → Step Scaling ; <strong>"maintenir une métrique à une valeur"</strong> → Target Tracking</li>
+<li><strong>"Conteneurs Fargate"</strong> → network mode awsvpc obligatoire</li>
+<li><strong>"Minimiser le nombre d'instances ECS pour réduire les coûts"</strong> → Binpack</li>
+<li><strong>"Le conteneur doit appeler S3/DynamoDB"</strong> → Task Role (pas Execution Role)</li>
+<li><strong>"Lambda doit joindre une base RDS privée"</strong> → attacher au VPC + anticiper la perte d'accès internet (NAT ou VPC endpoints)</li>
+<li><strong>"Éliminer les cold starts"</strong> → Provisioned concurrency (SnapStart si Java)</li>
+</ol>
+<hr />
+<h2 id="6-memo-flash-a-relire-avant-lexamen">6. Mémo flash (à relire avant l'examen)</h2>
+<ul>
+<li>SG = stateful, allow only, niveau ENI | NACL = stateless, allow+deny, niveau subnet, ordre numérique</li>
+<li>Entre 2 instances d'un même VPC : <strong>IP privée</strong> dans la règle SG</li>
+<li>Spot = préavis <strong>2 min</strong> | RI Standard = revendable Marketplace | Compute SP = couvre Fargate/Lambda</li>
+<li>Cluster PG = 1 AZ, perf | Spread PG = 7 instances/AZ, isolation | Partition PG = 7 partitions/AZ, big data</li>
+<li>ASG = régional (multi-AZ oui, multi-région non)</li>
+<li>ASG + ELB attaché = health checks <strong>combinés</strong> (EC2 status + ELB)</li>
+<li>Lifecycle hook : CONTINUE = poursuite normale | ABANDON = terminaison immédiate | timeout défaut 3600 s</li>
+<li>Simple &lt; Step (paliers, réactif pendant scaling) &lt; Target Tracking (le plus simple)</li>
+<li>ECS : Execution Role = pull image/logs | Task Role = API calls du conteneur</li>
+<li>Fargate = awsvpc only | Binpack = coût | Spread = haute dispo</li>
+<li>Lambda : 1000 concurrent/région | Reserved = quota dédié gratuit | Provisioned = anti-cold-start payant</li>
+<li>Lambda en VPC = perd internet public (NAT/IGW ou VPC endpoints pour compenser)</li>
+<li>Lambda@Edge = viewer/origin × request/response, global vs API Gateway régional</li>
+</ul>
+<hr />
+<h2 id="7-corrections-detaillees-des-qcm-du-jour">7. Corrections détaillées des QCM du jour</h2>
+<h3 id="qcm-1-ec2-7-questions">QCM 1 — EC2 (7 questions)</h3>
+<p><strong>Q1 — HPC, latence minimale intra-AZ → C) Cluster</strong> ✅
+Cluster rapproche physiquement les instances dans une AZ. Spread/Partition font l'inverse (isolation). <em>Piège associé : cluster PG incompatible avec un ASG multi-AZ.</em></p>
+<p><strong>Q2 — Discount flexible toutes familles/régions/OS → B) Compute Savings Plans</strong> ✅
+Seule option dont la remise s'applique quelle que soit la famille, taille, AZ, région, OS, tenancy — et couvre aussi Fargate et Lambda. EC2 Instance SP = famille+région fixes. RI = config encore plus figée.</p>
+<p><strong>Q3 — Autoriser HTTP sauf 3 IP malveillantes → B) Network ACL</strong> ✅ <em>(compté juste, erreur de frappe)</em>
+Il faut des règles <strong>deny</strong> explicites → NACL. Un SG ne sait faire que du allow. IAM ne gère pas le trafic réseau. Astuce : mettre les deny sur des numéros de règle bas (évalués en premier).</p>
+<p><strong>Q4 — Communication entre 2 instances du même VPC → C) IP privée</strong> ❌ (répondu A puis A de nouveau)
+<strong>Règle absolue</strong> : dans une règle SG entre ressources d'un même VPC, on référence l'IP privée ou l'ID du security group. L'IP publique/Elastic ferait sortir le trafic du VPC (voire échouerait selon le routage). Raté 2 fois → prioritaire dans la fiche mémo.</p>
+<p><strong>Q5 — ASG + ELB, instance KO au check ELB mais OK au status EC2 → B) remplacement programmé</strong> ✅ <em>(raté au 1er passage, corrigé au 2e)</em>
+Avec un LB attaché, l'ASG combine les deux checks : un échec ELB suffit à marquer l'instance unhealthy → remplacement. L'option "seul le LB arrête de router" décrit le comportement <strong>sans</strong> intégration ASG.</p>
+<p><strong>Q6 — Prix spot dépasse le max → B) préavis de 2 minutes</strong> ✅
+L'instance est stoppée ou terminée après un avertissement de 2 min. Elle ne bascule jamais automatiquement en On-Demand.</p>
+<p><strong>Q7 — Chaque instance sur un rack distinct → B) Spread</strong> ✅
+Spread = un rack (réseau + alimentation propres) par instance, max 7 par AZ par groupe. Partition isole des <strong>groupes</strong> d'instances, pas chaque instance individuellement.</p>
+<h3 id="qcm-2-auto-scaling-5-questions">QCM 2 — Auto Scaling (5 questions)</h3>
+<p><strong>Q1 — Scaling proportionnel + réactif pendant une action en cours → B) Step Scaling</strong> ✅
+Les "step adjustments" varient la réponse selon l'ampleur du dépassement, et la policy continue de traiter les alarmes pendant un scaling (contrairement à Simple qui attend le cooldown).</p>
+<p><strong>Q2 — Maintenir 80% CPU sans définir de seuils → C) Target Tracking</strong> ✅
+On fixe la cible, AWS crée et gère les alarmes CloudWatch tout seul.</p>
+<p><strong>Q3 — Retarder l'InService le temps d'un script d'init → B) Lifecycle Hook</strong> ✅
+Pending:Wait retient l'instance jusqu'à <code>CompleteLifecycleAction</code> ou timeout. Le grace period ne fait que différer les <em>health checks</em> ; le warmup ne concerne que l'agrégation des <em>métriques</em> ; le cooldown espace les <em>actions de scaling</em>.</p>
+<p><strong>Q4 — Default Result ABANDON au lancement, timeout expiré → B) terminaison immédiate</strong> ❌ (répondu C)
+Le heartbeat timeout ne se relance jamais seul. ABANDON = échec présumé → instance terminée immédiatement. CONTINUE = succès présumé → poursuite du cycle. (Une relance du timeout est possible mais uniquement via l'API <code>RecordLifecycleActionHeartbeat</code>, pas automatiquement.)</p>
+<p><strong>Q5 — ASG + LB : quel health check → B) celui du load balancer</strong> ✅
+Recommandation officielle : activer le health check ELB sur l'ASG pour que les instances défaillantes applicativement (pas juste hardware) soient remplacées.</p>
+<h3 id="qcm-3-ecslambda-5-questions">QCM 3 — ECS/Lambda (5 questions)</h3>
+<p><strong>Q1 — Maximiser l'utilisation des instances existantes → C) Binpack</strong> ❌ (répondu B)
+Binpack concentre les tâches sur le moins d'instances possible (critère : CPU ou RAM la plus faible restante) → économie. Spread fait l'inverse : il disperse pour la haute dispo. Mnémo : <strong>Binpack = portefeuille, Spread = disponibilité</strong>.</p>
+<p><strong>Q2 — Network mode obligatoire sur Fargate → C) awsvpc</strong> ✅
+Pas d'hôte géré par toi sur Fargate → chaque tâche reçoit sa propre ENI/IP, seul awsvpc le permet.</p>
+<p><strong>Q3 — Lambda attachée à un VPC, effet secondaire → B) perte d'internet public</strong> ✅
+Sauf NAT/IGW dans le VPC, ou VPC endpoints pour joindre les services AWS sans sortir sur internet.</p>
+<p><strong>Q4 — Capacité dédiée sans viser les cold starts → B) Reserved concurrency</strong> ✅
+Réserve un quota exclusif (gratuit). Provisioned concurrency pré-chauffe les environnements (payant) — c'est elle qui cible les cold starts.</p>
+<p><strong>Q5 — ASG multi-AZ + cluster placement group → B) impossible</strong> ✅
+Un cluster placement group ne peut pas s'étendre sur plusieurs AZ, par définition.</p>
+<hr />
+<p><strong>Score global du jour : 13/17 (76%)</strong> — au-dessus du seuil de passage dès le premier jour de contenu, avec 2 notions à retravailler : IP privée dans les règles SG (×2) et Binpack vs Spread.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copi\u00e9 dans le presse-papier", "clipboard.copy": "Copier dans le presse-papier", "search.result.more.one": "1 de plus sur cette page", "search.result.more.other": "# de plus sur cette page", "search.result.none": "Aucun document trouv\u00e9", "search.result.one": "1 document trouv\u00e9", "search.result.other": "# documents trouv\u00e9s", "search.result.placeholder": "Taper pour d\u00e9marrer la recherche", "search.result.term.missing": "Non trouv\u00e9", "select.version": "S\u00e9lectionner la version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
