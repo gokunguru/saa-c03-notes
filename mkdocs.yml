@@ -1,0 +1,7 @@
+site_name: Notes SAA-C03
+theme:
+  name: material
+  language: fr
+nav:
+  - Accueil: index.md
+  - J2 - EC2, Auto Scaling, ECS, Lambda: j2-ec2-autoscaling.md
